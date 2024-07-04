@@ -83,10 +83,5 @@ export default async function extractWalkData(walkPageUrl: string): Promise<Arra
     // Finally! We have our data
     const { walks } = JSON.parse(jsonStr);
 
-    if(walks.length === 0) {
-        console.log('No walks were found on the page.');
-        Deno.exit(1);
-    }
-
     return walks;
 }
