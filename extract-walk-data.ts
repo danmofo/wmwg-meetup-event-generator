@@ -26,9 +26,31 @@ import { DOMParser } from "https://deno.land/x/deno_dom@v0.1.47/deno-dom-wasm.ts
  * @returns An array of walks
  */
 
-// todo: Map the rest of the properties
+
 export type Walk = {
-    basic: BasicMetadata
+    basics: BasicMetadata,
+    start: Start[],
+    flags: Flag[],
+    contact: Contact[],
+    walks: WalkData[]
+}
+
+type Flag = {
+    section: string,
+    code: string,
+    name: string
+}
+
+type Contact = {
+    contactForm: string
+}
+
+type Start = {
+    timeHHMM: string,
+    description: string,
+    latitude: number,
+    longitude: number,
+    postcode: string
 }
 
 type BasicMetadata = {
@@ -36,13 +58,19 @@ type BasicMetadata = {
     startDate: Date,
     finishDate: Date,
     title: string,
-    description: string
+    description: string,
+    additionalNotes: string
 }
 
 type Date = {
     date: string,
     timezone_type: number,
     timezone: string
+}
+
+type WalkData = {
+    nationalGrade: string,
+    distanceMiles: number,
 }
 
 export default async function extractWalkData(walkPageUrl: string): Promise<Array<Walk>> {
@@ -77,6 +105,8 @@ export default async function extractWalkData(walkPageUrl: string): Promise<Arra
         .replaceAll("\\\"", "\"")
         // Unescape the single quotes
         .replaceAll("\\\'", "\'")
+        // Remove unicode spaces
+        .replaceAll('\\\\u00a0', " ")
         // Unescape the forward slashes
         .replaceAll("\\\\", "");
 
