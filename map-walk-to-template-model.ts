@@ -5,13 +5,17 @@ export type TemplateModel = {
     description: string,
     additional_notes: string,
     start_time: string,
+    start_datetime: string,
+    finish_datetime: string,
     start_point: string,
     postcode: string,
     google_maps_url: string,
     parking_text: string,
     food_text: string,
     walk_difficulty_text: string,
-    ramblers_contact_url: string
+    ramblers_contact_url: string,
+    original_walk_json: string,
+    wmwg_website_url: string
 }
 
 export default function mapWalkToTemplateModel(walk: Walk): TemplateModel {
@@ -22,13 +26,17 @@ export default function mapWalkToTemplateModel(walk: Walk): TemplateModel {
         description: walk.basics.description,
         additional_notes: walk.basics.additionalNotes,
         start_time: start.timeHHMM,
+        start_datetime: new Date(start.time.date).toLocaleString('en-GB'),
+        finish_datetime: new Date(walk.basics.finishDate.date).toLocaleString('en-GB'),
         start_point: start.description,
-        postcode: start.postcode,
+        postcode: start.postcode.toUpperCase(),
         google_maps_url: `https://www.google.com/maps/dir/Current+Location/${start.latitude},${start.longitude}`,
         parking_text: hasParkingAvailable(walk) ? 'Yes, parking is available.' : 'The walk leader has not specified if parking is available',
         food_text: getFoodText(walk),
         walk_difficulty_text: getWalkDifficultyText(walk),
-        ramblers_contact_url: walk.contact[0].contactForm
+        ramblers_contact_url: walk.contact[0].contactForm,
+        original_walk_json: JSON.stringify(walk, null, 4),
+        wmwg_website_url: `https://www.wmwg.org.uk/walks.html?walkid=${walk.admin.id}`
     }
 }
 

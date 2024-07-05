@@ -28,11 +28,18 @@ import { DOMParser } from "https://deno.land/x/deno_dom@v0.1.47/deno-dom-wasm.ts
 
 
 export type Walk = {
+    admin: Admin,
     basics: BasicMetadata,
     start: Start[],
     flags: Flag[],
     contact: Contact[],
     walks: WalkData[]
+}
+
+type Admin = {
+    dateUpdated: Date,
+    dateCreated: Date,
+    id: string
 }
 
 type Flag = {
@@ -46,6 +53,7 @@ type Contact = {
 }
 
 type Start = {
+    time: Date,
     timeHHMM: string,
     description: string,
     latitude: number,
@@ -111,7 +119,10 @@ export default async function extractWalkData(walkPageUrl: string): Promise<Arra
         .replaceAll("\\\\", "");
 
     // Finally! We have our data
-    const { walks } = JSON.parse(jsonStr);
+    const walks: Walk[] = JSON.parse(jsonStr).walks;
 
-    return walks;
+    // Return walks with the most recent walk first.
+    return walks.sort((a, b) => {
+        return a.basics.walkDate.date.localeCompare(b.basics.walkDate.date);
+    });
 }
