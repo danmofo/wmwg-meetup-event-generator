@@ -113,8 +113,12 @@ export default async function extractWalkData(walkPageUrl: string): Promise<Arra
         .replaceAll("\\\"", "\"")
         // Unescape the single quotes
         .replaceAll("\\\'", "\'")
-        // Remove unicode spaces
+        // Remove unicode characters - spaces, apostrophes, quotes, £ symbols - there's probably a more generic way to do this.
+        .replaceAll('\\\\u2019', "'")
         .replaceAll('\\\\u00a0', " ")
+        .replaceAll('\\\\u00a3', "£")
+        .replaceAll('\\\\u201c', "\\\"")
+        .replaceAll('\\\\u201d', "\\\"")
         // Unescape the forward slashes
         .replaceAll("\\\\", "");
 

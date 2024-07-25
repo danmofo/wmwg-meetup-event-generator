@@ -42,11 +42,18 @@ export default function mapWalkToTemplateModel(walk: Walk): TemplateModel {
 
 function hasParkingAvailable(walk: Walk) {
     const hasExplicitlySpecified = walk.flags.find(flag => flag.code === 'car-parking') !== undefined;
-    if(!hasExplicitlySpecified) {
-        if(walk.basics.description.includes('parking') || walk.basics.additionalNotes.includes('parking')) {
-            return true;
-        }
+    if(hasExplicitlySpecified) {
+        return true;
     }
+
+    // Check some other places
+    if(
+        walk.basics.description.toLowerCase().includes('parking') || 
+        walk.basics.additionalNotes.toLowerCase().includes('parking') || 
+        walk.start[0].description.toLowerCase().includes('car park')) {
+        return true;
+    }
+    
     return false;
 }
 
