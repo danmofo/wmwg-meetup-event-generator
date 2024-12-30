@@ -29,7 +29,7 @@ async function writeWalkTemplates(walks: Walk[]) {
         const template = mergeModelWithTemplate(templateHtml, templateModel);
 
         const filePrefix = pad(index.toString(), 3, {char: '0', side: 'left'});
-        const outputPath = `./output/${filePrefix}_${template.model.title}.html`;
+        const outputPath = `./output/${filePrefix}_${sanitizeFileName(template.model.title)}.html`;
         
         console.log(`Writing: ${outputPath}`);
         await Deno.writeFile(outputPath, new TextEncoder().encode(template.html));
@@ -37,3 +37,14 @@ async function writeWalkTemplates(walks: Walk[]) {
 
     console.log('Done writing templates.');
 }
+
+function sanitizeFileName(fileName: string): string {
+    // Define a regular expression to match invalid characters
+    const invalidCharsRegex = /[/\\?%*:|"<>]/g;
+  
+    // Replace invalid characters with an underscore
+    const sanitizedFileName = fileName.replace(invalidCharsRegex, '_');
+  
+    // Remove leading/trailing underscores and spaces
+    return sanitizedFileName.trim().replace(/_+/g, '_').replace(/^_|_$/g, '');
+  }

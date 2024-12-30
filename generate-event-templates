@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
 
+# Clean the output directory
+rm output/*.html
+
+# Generate new templates
 deno run --allow-net  --allow-read --allow-write main.ts

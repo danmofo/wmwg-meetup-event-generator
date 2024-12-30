@@ -120,7 +120,10 @@ export default async function extractWalkData(walkPageUrl: string): Promise<Arra
         .replaceAll('\\\\u201c', "\\\"")
         .replaceAll('\\\\u201d', "\\\"")
         // Unescape the forward slashes
-        .replaceAll("\\\\", "");
+        .replaceAll("\\\\", "")
+        // Remove other random gumph which contains double quotes
+        .replaceAll('<img src="/media/lib_ramblers/images/symbol_at.png" alt="@ sign" />', '@')
+        .replaceAll("\"The Pepperpot\"", "'The Pepperpot'")
 
     // Finally! We have our data
     const walks: Walk[] = JSON.parse(jsonStr).walks;
