@@ -88,10 +88,13 @@ export default async function extractWalkData(walkPageUrl: string): Promise<Arra
     const html = await resp.text();
     const document = new DOMParser().parseFromString(html, 'text/html');
 
-    // Find the <script> tag with the 'data' variable in
+    // Find the <script> tag with the walk data in.
+    // For some reason all of the script tags have a "data" variable in, but only one of them contains the walks.
+    // An easier way to detect this is look for something unique we know is in the JSON
     const [ script ] = Array.from(document.querySelectorAll('script')).filter(script => {
-        return script.innerHTML.includes(`var data=`);
+        return script.innerHTML.includes(`nationalUrl`);
     });
+
 
     if(!script) {
         console.log('Failed to find <script> with "var data=" in - the page HTML may have changed.');
